@@ -38,7 +38,7 @@ const Scene = () => {
     controls.enableZoom = true;
 
     const adjustCamera = () => {
-      const scaleFactor = Math.min(window.innerWidth / 1000, window.innerHeight / 1000);
+      const scaleFactor = Math.min(window.innerWidth / 800, window.innerHeight / 800);
       camera.position.z = 100 / scaleFactor;
       controls.update();
     };
