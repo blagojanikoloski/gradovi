@@ -60,9 +60,36 @@ const Scene = () => {
     };
     renderer.domElement.addEventListener('resize', handleResize);
 
+
+    const tooltip = document.createElement('div');
+    tooltip.id = 'cityNameTooltip';
+    document.body.appendChild(tooltip);
+
     const handleMouseMove = (event) => {
       mouseRef.current.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouseRef.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+      
+      raycasterRef.current.setFromCamera(mouseRef.current, cameraRef.current);
+      const intersects = raycasterRef.current.intersectObjects(scene.children);
+    
+      const tooltip = document.getElementById('cityNameTooltip');
+      
+      if (intersects.length > 0) {
+        const intersectedObject = intersects[0].object;
+        
+        if (intersectedObject.userData.name) {
+          const cityName = intersectedObject.userData.name;
+          tooltip.style.display = 'block';
+          tooltip.style.left = `${event.clientX - 20}px`;
+          tooltip.style.top = `${event.clientY - 30}px`;
+          tooltip.innerHTML = cityName;
+        } else {
+          tooltip.style.display = 'none';
+        }
+      } else {
+        tooltip.style.display = 'none';
+      }
     };
     renderer.domElement.addEventListener('mousemove', handleMouseMove);
 
@@ -199,6 +226,7 @@ const Scene = () => {
       window.removeEventListener('click', handleClick);
       renderer.dispose();
       document.body.removeChild(renderer.domElement);
+      document.body.removeChild(tooltip);
     };
   }, []);
 
