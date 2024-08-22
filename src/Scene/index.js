@@ -23,6 +23,8 @@ const Scene = () => {
     document.body.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
+    scene.background = new THREE.Color( "rgb(245, 244, 230)" );
+
     const ambientLight = new THREE.AmbientLight(0xffffff, 1);
     scene.add(ambientLight);
 
@@ -56,13 +58,13 @@ const Scene = () => {
       renderer.setSize(window.innerWidth, window.innerHeight);
       adjustCamera();
     };
-    window.addEventListener('resize', handleResize);
+    renderer.domElement.addEventListener('resize', handleResize);
 
     const handleMouseMove = (event) => {
       mouseRef.current.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouseRef.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
     };
-    window.addEventListener('mousemove', handleMouseMove);
+    renderer.domElement.addEventListener('mousemove', handleMouseMove);
 
     const handleClick = () => {
       raycasterRef.current.setFromCamera(mouseRef.current, cameraRef.current);
@@ -117,11 +119,7 @@ const Scene = () => {
       
       
     };
-    window.addEventListener('click', handleClick);
-
-
-    scene.background = new THREE.Color( "rgb(245, 244, 230)" );
-
+    renderer.domElement.addEventListener('click', handleClick);
 
 
     // Model size (already determined)
