@@ -79,7 +79,7 @@ const Scene = () => {
         const intersectedObject = intersects[0].object;
         
         if (intersectedObject.userData.name) {
-          const cityName = intersectedObject.userData.name;
+          const cityName = intersectedObject.userData.nameCyrillic;
           tooltip.style.display = 'block';
           tooltip.style.left = `${event.clientX - 20}px`;
           tooltip.style.top = `${event.clientY - 30}px`;
@@ -136,7 +136,8 @@ const Scene = () => {
       
           newCube.userData = {
             name: `${cityName}`,
-            level: newLevel
+            level: newLevel,
+            nameCyrillic: clickedObject.userData.nameCyrillic
           };
 
           console.log(newCube.userData);
@@ -158,43 +159,44 @@ const Scene = () => {
     const latRange = 1.53;  // Approximate latitude range of Macedonia
     const lonRange = 2.6;  // Approximate longitude range of Macedonia
     // Coordinates for the cities
-    const cities = {
-      Skopje: { lat: 41.9981, lon: 21.4254 },
-      Bitola: { lat: 41.0297, lon: 21.3292 },
-      Ohrid: { lat: 41.1231, lon: 20.8016 },
-      Veles: { lat: 41.7797, lon: 21.7376 },
-      Kumanovo: { lat: 42.1322, lon: 21.7144 },
-      Prilep: { lat: 41.3441, lon: 21.5528 },
-      Strumica: { lat: 41.4378, lon: 22.6427 },
-      Tetovo: { lat: 42.0069, lon: 20.9715 },
-      Gostivar: { lat: 41.8026, lon: 20.9089 },
-      Kocani: { lat: 41.9168, lon: 22.4083 },
-      Struga: { lat: 41.1778, lon: 20.6783 },
-      Gevgelija: { lat: 41.1452, lon: 22.4997 },
-      Debar: { lat: 41.5198, lon: 20.5289 },
-      Berovo: { lat: 41.7061, lon: 22.8552 },
-      Vinica: { lat: 41.8833, lon: 22.5081 },
-      Valandovo: { lat: 41.3170, lon: 22.5618 },
-      Shtip: { lat: 41.7464, lon: 22.1997 },
-      SvetiNikole: { lat: 41.8656, lon: 21.9373 },
-      Resen: { lat: 41.0903, lon: 21.0133 },
-      Radovish: { lat: 41.6395, lon: 22.4679 },
-      Probishtip: { lat: 41.9948, lon: 22.1877 },
-      Pehchevo: { lat: 41.7621, lon: 22.8865 },
-      Negotino: { lat: 41.4829, lon: 22.0923 },
-      MakedonskaKamenica: { lat: 42.0214, lon: 22.5871 },
-      MakedonskiBrod: { lat: 41.5133, lon: 21.2174 },
-      Krushevo: { lat: 41.3706, lon: 21.2502 },
-      KrivaPalanka: { lat: 42.2058, lon: 22.3308 },
-      Kratovo: { lat: 42.0800, lon: 22.1803 },
-      Kichevo: { lat: 41.5129, lon: 20.9525 },
-      DemirHisar: { lat: 41.2214, lon: 21.2025 },
-      DemirKapija: { lat: 41.4088, lon: 22.2436 },
-      Delchevo: { lat: 41.9709, lon: 22.7740 },
-      Bogdanci: { lat: 41.2031, lon: 22.5754 },
-      Kavadarci: { lat: 41.4329, lon: 22.0089 },
-      Dojran: { lat: 41.1811, lon: 22.7227 }
+    const cities= {
+      Skopje: { lat: 41.9981, lon: 21.4254, nameCyrillic: "Скопје" },
+      Bitola: { lat: 41.0297, lon: 21.3292 , nameCyrillic: "Битола" },
+      Ohrid: { lat: 41.1231, lon: 20.8016 , nameCyrillic: "Охрид" },
+      Veles: { lat: 41.7797, lon: 21.7376 , nameCyrillic: "Велес" },
+      Kumanovo: { lat: 42.1322, lon: 21.7144 , nameCyrillic: "Куманово" },
+      Prilep: { lat: 41.3441, lon: 21.5528 , nameCyrillic: "Прилеп" },
+      Strumica: { lat: 41.4378, lon: 22.6427 , nameCyrillic: "Струмица" },
+      Tetovo: { lat: 42.0069, lon: 20.9715 , nameCyrillic: "Тетово" },
+      Gostivar: { lat: 41.8026, lon: 20.9089 , nameCyrillic: "Гостивар" },
+      Kocani: { lat: 41.9168, lon: 22.4083 , nameCyrillic: "Кочани" },
+      Struga: { lat: 41.1778, lon: 20.6783 , nameCyrillic: "Струга" },
+      Gevgelija: { lat: 41.1452, lon: 22.4997 , nameCyrillic: "Гевгелија" },
+      Debar: { lat: 41.5198, lon: 20.5289 , nameCyrillic: "Дебар" },
+      Berovo: { lat: 41.7061, lon: 22.8552 , nameCyrillic: "Берово" },
+      Vinica: { lat: 41.8833, lon: 22.5081 , nameCyrillic: "Виница" },
+      Valandovo: { lat: 41.3170, lon: 22.5618 , nameCyrillic: "Валандово" },
+      Shtip: { lat: 41.7464, lon: 22.1997 , nameCyrillic: "Штип" },
+      SvetiNikole: { lat: 41.8656, lon: 21.9373 , nameCyrillic: "Свети Николе" },
+      Resen: { lat: 41.0903, lon: 21.0133 , nameCyrillic: "Ресен" },
+      Radovish: { lat: 41.6395, lon: 22.4679 , nameCyrillic: "Радовиш" },
+      Probishtip: { lat: 41.9948, lon: 22.1877 , nameCyrillic: "Пробиштип" },
+      Pehchevo: { lat: 41.7621, lon: 22.8865 , nameCyrillic: "Пехчево" },
+      Negotino: { lat: 41.4829, lon: 22.0923 , nameCyrillic: "Неготино" },
+      MakedonskaKamenica: { lat: 42.0214, lon: 22.5871 , nameCyrillic: "Македонска Каменица" },
+      MakedonskiBrod: { lat: 41.5133, lon: 21.2174 , nameCyrillic: "Македонски Брод" },
+      Krushevo: { lat: 41.3706, lon: 21.2502 , nameCyrillic: "Крушево" },
+      KrivaPalanka: { lat: 42.2058, lon: 22.3308 , nameCyrillic: "Крива Паланка" },
+      Kratovo: { lat: 42.0800, lon: 22.1803 , nameCyrillic: "Кратово" },
+      Kichevo: { lat: 41.5129, lon: 20.9525 , nameCyrillic: "Кичево" },
+      DemirHisar: { lat: 41.2214, lon: 21.2025 , nameCyrillic: "Демир Хисар" },
+      DemirKapija: { lat: 41.4088, lon: 22.2436 , nameCyrillic: "Демир Капија" },
+      Delchevo: { lat: 41.9709, lon: 22.7740 , nameCyrillic: "Делчево" },
+      Bogdanci: { lat: 41.2031, lon: 22.5754 , nameCyrillic: "Богданци" },
+      Kavadarci: { lat: 41.4329, lon: 22.0089 , nameCyrillic: "Кавадарци" },
+      Dojran: { lat: 41.1811, lon: 22.7227 , nameCyrillic: "Дојран" }
     };
+
 
     // Conversion function: map lat/lon to 3D coordinates
     const latLonTo3DCoords = (lat, lon, modelSize, centerLat, centerLon, latRange, lonRange) => {
@@ -208,7 +210,7 @@ const Scene = () => {
       return { x, y, z: 3.5 };
     };
 
-    Object.entries(cities).forEach(([cityName, { lat, lon }]) => {
+    Object.entries(cities).forEach(([cityName, { lat, lon, nameCyrillic }]) => {
       const coords = latLonTo3DCoords(lat, lon, modelSize, centerLat, centerLon, latRange, lonRange);
 
       const geometry = new THREE.BoxGeometry(3, 3, 3);
@@ -216,7 +218,8 @@ const Scene = () => {
       const cube = new THREE.Mesh(geometry, material);
 
       cube.position.set(coords.x, coords.y, coords.z);
-      cube.userData.name = cityName;  // Store the city name in userData
+      cube.userData.name = cityName;
+      cube.userData.nameCyrillic = nameCyrillic;  // Store the city name in userData
       scene.add(cube);
     });
 

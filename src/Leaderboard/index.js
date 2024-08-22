@@ -1,16 +1,12 @@
-    // // Model size (already determined)
-    // const modelSize = { x: 120, y: 94.18, z: 6.82 };
+import React, { useState, useEffect } from 'react';
 
-    // // Real-world coordinates for the center of Macedonia (approximate)
-    // const centerLat = 41.55;
-    // const centerLon = 21.5853;
+const Leaderboard = () => {
 
-    // // Latitude and longitude range for Macedonia
-    // const latRange = 1.53;  // Approximate latitude range of Macedonia
-    // const lonRange = 2.6;  // Approximate longitude range of Macedonia
+  // State to manage visibility
+  const [isVisible, setIsVisible] = useState(true);
 
-    // // Coordinates for the cities
-    const cities= {
+  // Sample data for the leaderboard
+    const leaderboardData = {
       Skopje: { lat: 41.9981, lon: 21.4254, nameCyrillic: "Скопје" },
       Bitola: { lat: 41.0297, lon: 21.3292 , nameCyrillic: "Битола" },
       Ohrid: { lat: 41.1231, lon: 20.8016 , nameCyrillic: "Охрид" },
@@ -48,27 +44,57 @@
       Dojran: { lat: 41.1811, lon: 22.7227 , nameCyrillic: "Дојран" }
     };
 
+    const leaderboardArray = Object.keys(leaderboardData).map(cityName => ({
+        name: cityName,
+        ...leaderboardData[cityName]
+      }));
 
-    // // Conversion function: map lat/lon to 3D coordinates
-    // const latLonTo3DCoords = (lat, lon, modelSize, centerLat, centerLon, latRange, lonRange) => {
-    //   // Calculate offsets from the center
-    //   const latOffset = (lat - centerLat) / latRange * modelSize.y;
-    //   const lonOffset = (lon - centerLon) / lonRange * modelSize.x;
+    // Function to toggle leaderboard visibility
+    const handleToggle = () => {
+      setIsVisible(!isVisible);
+    };
+    
+   // Effect to handle initial visibility based on screen size
+   useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 900) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+    };
+    // Add event listener
+    window.addEventListener('resize', handleResize);
 
-    //   // Adjust offsets to fit the model
-    //   const x = lonOffset-6.8;
-    //   const y = latOffset-3.3;
+    // Check initial screen size
+    handleResize();
 
-    //   return { x, y, z: 3.5 };
-    // };
+    // Clean up event listener
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-    // Object.entries(cities).forEach(([cityName, { lat, lon }]) => {
-    //   const coords = latLonTo3DCoords(lat, lon, modelSize, centerLat, centerLon, latRange, lonRange);
+  return (
+    <div>
+      {/* Toggle button */}
+      <div className="leaderboard-toggle" onClick={handleToggle}>
+        {isVisible ? '☰ Close Leaderboard' : '☰ Open Leaderboard'}
+      </div>
+      
+      {/* Conditionally render the leaderboard */}
+      {isVisible && (
+        <div className="leaderboard-container">
+          <h3>Leaderboard</h3>
+          <ul>
+            {leaderboardArray.map((city) => (
+              <li key={city.name}>
+                {city.nameCyrillic}: {city.lat}, {city.lon}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
 
-    //   const geometry = new THREE.BoxGeometry(3, 3, 3);
-    //   const material = new THREE.MeshBasicMaterial({ color: 0xA9A9A9 });
-    //   const cube = new THREE.Mesh(geometry, material);
-    //   cube.position.set(coords.x, coords.y, coords.z);
-    //   scene.add(cube);
-
-    // });
+export default Leaderboard;
