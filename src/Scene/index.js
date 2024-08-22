@@ -72,12 +72,12 @@ const Scene = () => {
         const clickedObject = intersects[0].object;
       
         if (clickedObject.userData.name != null) {
-          const cityName = clickedObject.userData.name.split('_')[0]; // Extract the base city name
+          const cityName = clickedObject.userData.name;
       
           // Find the maximum level of all cubes with the same cityName
           let maxLevel = 0;
           scene.traverse((object) => {
-            if (object.userData.name && object.userData.name.startsWith(cityName)) {
+            if (object.userData.name && object.userData.name === (cityName)) {
               const level = object.userData.level || 1;
               if (level > maxLevel) {
                 maxLevel = level;
@@ -88,7 +88,7 @@ const Scene = () => {
           const newLevel = maxLevel + 1;
           let highestCubeZ = 0;
           scene.traverse((object) => {
-            if (object.userData.name && object.userData.name.startsWith(cityName)) {
+            if (object.userData.name && object.userData.name === (cityName)) {
               if (object.position.z > highestCubeZ) {
                 highestCubeZ = object.position.z;
               }
@@ -106,7 +106,7 @@ const Scene = () => {
           );
       
           newCube.userData = {
-            name: `${cityName}_level${newLevel}`,
+            name: `${cityName}`,
             level: newLevel
           };
 
@@ -118,6 +118,11 @@ const Scene = () => {
       
     };
     window.addEventListener('click', handleClick);
+
+
+    scene.background = new THREE.Color( "rgb(245, 244, 230)" );
+
+
 
     // Model size (already determined)
     const modelSize = { x: 120, y: 94.18, z: 6.82 };
@@ -162,7 +167,8 @@ const Scene = () => {
       DemirKapija: { lat: 41.4088, lon: 22.2436 },
       Delchevo: { lat: 41.9709, lon: 22.7740 },
       Bogdanci: { lat: 41.2031, lon: 22.5754 },
-      Kavadarci: { lat: 41.4329, lon: 22.0089 }
+      Kavadarci: { lat: 41.4329, lon: 22.0089 },
+      Dojran: { lat: 41.1811, lon: 22.7227 }
     };
 
     // Conversion function: map lat/lon to 3D coordinates

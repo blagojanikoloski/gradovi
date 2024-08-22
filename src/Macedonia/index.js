@@ -5,11 +5,10 @@ const Macedonia = ({ scene }) => {
   useEffect(() => {
 
     const loader = new GLTFLoader();
-    //ImageToStl.com_macedoniawithcities.gltf
-    loader.load('macedoniawithregions.gltf', (gltf) => {
+    loader.load('macedoniawithregions.glb', (gltf) => {
       
       const model = gltf.scene;
-      model.position.set(0, 0, 0); // Center the model
+      model.position.set(0, 0, 0);
       scene.add(model);
 
     }, undefined, (error) => {
