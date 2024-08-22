@@ -118,3 +118,68 @@ body {
   cursor: pointer;
   z-index: 1001;
 }
+
+
+/*Chat*/
+.chat-container {
+  position: fixed; /* Fix it at the bottom-left of the viewport */
+  bottom: 100px;
+  left: 0;
+  width: 300px; /* Adjust width as needed */
+  height: 70%; /* Adjust height as needed */
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.chat-container.hidden {
+  display: none; /* Hide the chat container */
+}
+
+.messages {
+  flex: 1;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  overflow-y: auto;
+}
+
+.message {
+  margin-bottom: 10px;
+}
+
+.input-area {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.input-area input {
+  flex: 1;
+  padding: 5px;
+}
+
+.input-area button {
+  padding: 5px 10px;
+  margin-left: 10px;
+}
+
+.chat-toggle {
+  position: fixed; 
+  bottom: 20px;
+  left: 20px;
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1000; 
+}
+
+@media screen and (max-width: 768px) {
+
+}
