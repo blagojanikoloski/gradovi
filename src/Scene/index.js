@@ -1,0 +1,212 @@
+import React, { useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import Macedonia from '../Macedonia';
+
+const Scene = () => {
+  const [scene, setScene] = useState(null);
+  const rendererRef = useRef(null);
+  const cameraRef = useRef(null);
+  const raycasterRef = useRef(new THREE.Raycaster());
+  const mouseRef = useRef(new THREE.Vector2());
+
+  useEffect(() => {
+    const scene = new THREE.Scene();
+    setScene(scene);
+
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 1, 100);
+    cameraRef.current = camera;
+
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+    rendererRef.current = renderer;
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(5, 5, 5).normalize();
+    scene.add(directionalLight);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.25;
+    controls.enableZoom = true;
+
+    const adjustCamera = () => {
+      const scaleFactor = Math.min(window.innerWidth / 1000, window.innerHeight / 1000);
+      camera.position.z = 100 / scaleFactor;
+      controls.update();
+    };
+
+    adjustCamera();
+
+    const animate = () => {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    const handleResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      adjustCamera();
+    };
+    window.addEventListener('resize', handleResize);
+
+    const handleMouseMove = (event) => {
+      mouseRef.current.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouseRef.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+
+    const handleClick = () => {
+      raycasterRef.current.setFromCamera(mouseRef.current, cameraRef.current);
+      const intersects = raycasterRef.current.intersectObjects(scene.children);
+
+      if (intersects.length > 0) {
+        const clickedObject = intersects[0].object;
+      
+        if (clickedObject.userData.name != null) {
+          const cityName = clickedObject.userData.name.split('_')[0]; // Extract the base city name
+      
+          // Find the maximum level of all cubes with the same cityName
+          let maxLevel = 0;
+          scene.traverse((object) => {
+            if (object.userData.name && object.userData.name.startsWith(cityName)) {
+              const level = object.userData.level || 1;
+              if (level > maxLevel) {
+                maxLevel = level;
+              }
+            }
+          });
+      
+          const newLevel = maxLevel + 1;
+          let highestCubeZ = 0;
+          scene.traverse((object) => {
+            if (object.userData.name && object.userData.name.startsWith(cityName)) {
+              if (object.position.z > highestCubeZ) {
+                highestCubeZ = object.position.z;
+              }
+            }
+          });
+      
+          const geometry = new THREE.BoxGeometry(3, 3, 3);
+          const material = new THREE.MeshBasicMaterial({ color: 0xA9A9A9 }); // Different color for distinction
+          const newCube = new THREE.Mesh(geometry, material);
+      
+          newCube.position.set(
+            clickedObject.position.x,
+            clickedObject.position.y,
+            highestCubeZ + 3
+          );
+      
+          newCube.userData = {
+            name: `${cityName}_level${newLevel}`,
+            level: newLevel
+          };
+
+          console.log(newCube.userData);
+          scene.add(newCube);
+        }
+      }
+      
+      
+    };
+    window.addEventListener('click', handleClick);
+
+    // Model size (already determined)
+    const modelSize = { x: 120, y: 94.18, z: 6.82 };
+    // Real-world coordinates for the center of Macedonia (approximate)
+    const centerLat = 41.55;
+    const centerLon = 21.5853;
+    // Latitude and longitude range for Macedonia
+    const latRange = 1.53;  // Approximate latitude range of Macedonia
+    const lonRange = 2.6;  // Approximate longitude range of Macedonia
+    // Coordinates for the cities
+    const cities = {
+      Skopje: { lat: 41.9981, lon: 21.4254 },
+      Bitola: { lat: 41.0297, lon: 21.3292 },
+      Ohrid: { lat: 41.1231, lon: 20.8016 },
+      Veles: { lat: 41.7797, lon: 21.7376 },
+      Kumanovo: { lat: 42.1322, lon: 21.7144 },
+      Prilep: { lat: 41.3441, lon: 21.5528 },
+      Strumica: { lat: 41.4378, lon: 22.6427 },
+      Tetovo: { lat: 42.0069, lon: 20.9715 },
+      Gostivar: { lat: 41.8026, lon: 20.9089 },
+      Kocani: { lat: 41.9168, lon: 22.4083 },
+      Struga: { lat: 41.1778, lon: 20.6783 },
+      Gevgelija: { lat: 41.1452, lon: 22.4997 },
+      Debar: { lat: 41.5198, lon: 20.5289 },
+      Berovo: { lat: 41.7061, lon: 22.8552 },
+      Vinica: { lat: 41.8833, lon: 22.5081 },
+      Valandovo: { lat: 41.3170, lon: 22.5618 },
+      Shtip: { lat: 41.7464, lon: 22.1997 },
+      SvetiNikole: { lat: 41.8656, lon: 21.9373 },
+      Resen: { lat: 41.0903, lon: 21.0133 },
+      Radovish: { lat: 41.6395, lon: 22.4679 },
+      Probishtip: { lat: 41.9948, lon: 22.1877 },
+      Pehchevo: { lat: 41.7621, lon: 22.8865 },
+      Negotino: { lat: 41.4829, lon: 22.0923 },
+      MakedonskaKamenica: { lat: 42.0214, lon: 22.5871 },
+      MakedonskiBrod: { lat: 41.5133, lon: 21.2174 },
+      Krushevo: { lat: 41.3706, lon: 21.2502 },
+      KrivaPalanka: { lat: 42.2058, lon: 22.3308 },
+      Kratovo: { lat: 42.0800, lon: 22.1803 },
+      Kichevo: { lat: 41.5129, lon: 20.9525 },
+      DemirHisar: { lat: 41.2214, lon: 21.2025 },
+      DemirKapija: { lat: 41.4088, lon: 22.2436 },
+      Delchevo: { lat: 41.9709, lon: 22.7740 },
+      Bogdanci: { lat: 41.2031, lon: 22.5754 },
+      Kavadarci: { lat: 41.4329, lon: 22.0089 }
+    };
+
+    // Conversion function: map lat/lon to 3D coordinates
+    const latLonTo3DCoords = (lat, lon, modelSize, centerLat, centerLon, latRange, lonRange) => {
+      // Calculate offsets from the center
+      const latOffset = (lat - centerLat) / latRange * modelSize.y;
+      const lonOffset = (lon - centerLon) / lonRange * modelSize.x;
+      // Adjust offsets to fit the model
+      const x = lonOffset-6.8;
+      const y = latOffset-3.3;
+
+      return { x, y, z: 3.5 };
+    };
+
+    Object.entries(cities).forEach(([cityName, { lat, lon }]) => {
+      const coords = latLonTo3DCoords(lat, lon, modelSize, centerLat, centerLon, latRange, lonRange);
+
+      const geometry = new THREE.BoxGeometry(3, 3, 3);
+      const material = new THREE.MeshBasicMaterial({ color: 0xA9A9A9 });
+      const cube = new THREE.Mesh(geometry, material);
+
+      cube.position.set(coords.x, coords.y, coords.z);
+      cube.userData.name = cityName;  // Store the city name in userData
+      scene.add(cube);
+    });
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('click', handleClick);
+      renderer.dispose();
+      document.body.removeChild(renderer.domElement);
+    };
+  }, []);
+
+  return (
+    <div>
+      {scene && (
+        <>
+          <Macedonia scene={scene} />
+        </>
+      )}
+    </div>
+  );
+};
+
+export default Scene;
