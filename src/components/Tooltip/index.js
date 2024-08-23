@@ -1,10 +1,10 @@
 import React from 'react';
 
-const Tooltip = ({ content, position, visible, onClose, onAccept }) => {
+const Tooltip = ({ content, visible, onClose, onAccept }) => {
   if (!visible) return null;
 
   return (
-    <div className="tooltip" style={{ left: position.x, top: position.y }}>
+    <div className="tooltip">
       <div className="tooltip-content">
         <p>{content}</p>
         <div className="tooltip-buttons">

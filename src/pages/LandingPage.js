@@ -11,7 +11,6 @@ const LandingPage = () => {
   const raycasterRef = useRef(new THREE.Raycaster());
   const mouseRef = useRef(new THREE.Vector2());
   const [tooltipContent, setTooltipContent] = useState('');
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
   useEffect(() => {
@@ -88,7 +87,6 @@ const LandingPage = () => {
           const cityName = clickedObject.userData.nameCyrillic;
           const content = "Влези во " + cityName + "?";
           setTooltipContent(content);
-          setTooltipPosition({ x: `${event.clientX - 50}px`, y: `${event.clientY - 80}px` });
           setTooltipVisible(true);
         }
       } else {
@@ -195,7 +193,6 @@ const LandingPage = () => {
       {scene && <Macedonia scene={scene} />}
       <Tooltip 
       content={tooltipContent} 
-      position={tooltipPosition} 
       visible={tooltipVisible}
       onClose={handleCloseTooltip}
       onAccept={handleAcceptTooltip} />
