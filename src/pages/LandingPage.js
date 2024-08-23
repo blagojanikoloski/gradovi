@@ -190,6 +190,7 @@ const LandingPage = () => {
 
   return (
     <div>
+      <div className="choose-city">Одбери град</div>
       {scene && <Macedonia scene={scene} />}
       <Tooltip 
       content={tooltipContent} 
