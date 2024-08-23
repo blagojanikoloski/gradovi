@@ -49,18 +49,62 @@ body {
 
 .tooltip {
   position: absolute;
-  background: white;
-  border: 1px solid #ccc;
-  padding: 8px;
-  border-radius: 4px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  background: #fef9f0; /* Warm cream color */
+  border: 1px solid #e2cbbf; /* Soft contrast border */
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  max-width: 400px;
   z-index: 1000;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  color: #4a3b2a; /* Darker text for better readability */
+}
+
+.tooltip-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tooltip p {
+  margin: 0;
+  padding-bottom: 16px;
+  text-align: center;
 }
 
 .tooltip-buttons {
-  margin-top: 8px;
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
 }
 
-.tooltip-buttons button {
-  margin-right: 4px;
+.tooltip-button {
+  border: none;
+  padding: 10px 20px;
+  margin: 5px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-weight: bold;
+}
+
+.tooltip-button.accept {
+  background-color: #d9e6d9; /* Soft green cream */
+  color: #4a3b2a;
+}
+
+.tooltip-button.accept:hover {
+  background-color: #b5d1b5;
+}
+
+.tooltip-button.close {
+  background-color: #fbdada; /* Soft pink cream */
+  color: #4a3b2a;
+}
+
+.tooltip-button.close:hover {
+  background-color: #f8bcbc;
 }

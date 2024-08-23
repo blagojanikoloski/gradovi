@@ -86,7 +86,8 @@ const LandingPage = () => {
         
         if (clickedObject.userData.name) {
           const cityName = clickedObject.userData.nameCyrillic;
-          setTooltipContent(cityName);
+          const content = "Влези во " + cityName + "?";
+          setTooltipContent(content);
           setTooltipPosition({ x: `${event.clientX - 50}px`, y: `${event.clientY - 80}px` });
           setTooltipVisible(true);
         }
@@ -167,7 +168,7 @@ const LandingPage = () => {
 
       cube.position.set(coords.x, coords.y, coords.z);
       cube.userData.name = cityName;
-      cube.userData.nameCyrillic = nameCyrillic;  // Store the city name in userData
+      cube.userData.nameCyrillic = nameCyrillic; 
       scene.add(cube);
     });
 
@@ -181,10 +182,23 @@ const LandingPage = () => {
     };
   }, []);
 
+  const handleCloseTooltip = () => {
+    setTooltipVisible(false);
+  };
+
+  const handleAcceptTooltip = () => {
+    alert("WOO");
+  };
+
   return (
     <div>
       {scene && <Macedonia scene={scene} />}
-      <Tooltip content={tooltipContent} position={tooltipPosition} visible={tooltipVisible} />
+      <Tooltip 
+      content={tooltipContent} 
+      position={tooltipPosition} 
+      visible={tooltipVisible}
+      onClose={handleCloseTooltip}
+      onAccept={handleAcceptTooltip} />
     </div>
   );
 };

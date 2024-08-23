@@ -1,15 +1,16 @@
-// Tooltip.js
 import React from 'react';
 
-const Tooltip = ({ content, position, visible }) => {
+const Tooltip = ({ content, position, visible, onClose, onAccept }) => {
   if (!visible) return null;
 
   return (
     <div className="tooltip" style={{ left: position.x, top: position.y }}>
-      {content}
-      <div className="tooltip-buttons">
-        <button onClick={() => alert('Yes clicked')}>Yes</button>
-        <button onClick={() => alert('No clicked')}>No</button>
+      <div className="tooltip-content">
+        <p>{content}</p>
+        <div className="tooltip-buttons">
+          <button className="tooltip-button accept" onClick={() => onAccept()}>Yes</button>
+          <button className="tooltip-button close" onClick={() => onClose()}>No</button>
+        </div>
       </div>
     </div>
   );
