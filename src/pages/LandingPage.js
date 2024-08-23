@@ -1,14 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import Macedonia from '../Macedonia';
+import Macedonia from '../components/Macedonia';
+import Tooltip from '../components/Tooltip';
 
-const Scene = () => {
+const LandingPage = () => {
   const [scene, setScene] = useState(null);
   const rendererRef = useRef(null);
   const cameraRef = useRef(null);
   const raycasterRef = useRef(new THREE.Raycaster());
   const mouseRef = useRef(new THREE.Vector2());
+  const [tooltipContent, setTooltipContent] = useState('');
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const [tooltipVisible, setTooltipVisible] = useState(false);
 
   useEffect(() => {
     const scene = new THREE.Scene();
@@ -60,95 +64,39 @@ const Scene = () => {
     };
     renderer.domElement.addEventListener('resize', handleResize);
 
-
-    const tooltip = document.createElement('div');
-    tooltip.id = 'cityNameTooltip';
-    document.body.appendChild(tooltip);
-
     const handleMouseMove = (event) => {
       mouseRef.current.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouseRef.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-      
-      raycasterRef.current.setFromCamera(mouseRef.current, cameraRef.current);
-      const intersects = raycasterRef.current.intersectObjects(scene.children);
-    
-      const tooltip = document.getElementById('cityNameTooltip');
-      
-      if (intersects.length > 0) {
-        const intersectedObject = intersects[0].object;
-        
-        if (intersectedObject.userData.name) {
-          const cityName = intersectedObject.userData.nameCyrillic;
-          tooltip.style.display = 'block';
-          tooltip.style.left = `${event.clientX - 20}px`;
-          tooltip.style.top = `${event.clientY - 30}px`;
-          tooltip.innerHTML = cityName;
-        } else {
-          tooltip.style.display = 'none';
-        }
-      } else {
-        tooltip.style.display = 'none';
-      }
     };
     renderer.domElement.addEventListener('mousemove', handleMouseMove);
 
-    const handleClick = () => {
+
+    const tooltip = document.createElement('div');
+    document.body.appendChild(tooltip);
+
+    const handleClick = (event) => {
+      mouseRef.current.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouseRef.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
       raycasterRef.current.setFromCamera(mouseRef.current, cameraRef.current);
       const intersects = raycasterRef.current.intersectObjects(scene.children);
 
       if (intersects.length > 0) {
         const clickedObject = intersects[0].object;
-      
-        if (clickedObject.userData.name != null) {
-          const cityName = clickedObject.userData.name;
-      
-          // Find the maximum level of all cubes with the same cityName
-          let maxLevel = 0;
-          scene.traverse((object) => {
-            if (object.userData.name && object.userData.name === (cityName)) {
-              const level = object.userData.level || 1;
-              if (level > maxLevel) {
-                maxLevel = level;
-              }
-            }
-          });
-      
-          const newLevel = maxLevel + 1;
-          let highestCubeZ = 0;
-          scene.traverse((object) => {
-            if (object.userData.name && object.userData.name === (cityName)) {
-              if (object.position.z > highestCubeZ) {
-                highestCubeZ = object.position.z;
-              }
-            }
-          });
-      
-          const geometry = new THREE.BoxGeometry(3, 3, 3);
-          const material = new THREE.MeshBasicMaterial({ color: 0xA9A9A9 }); // Different color for distinction
-          const newCube = new THREE.Mesh(geometry, material);
-      
-          newCube.position.set(
-            clickedObject.position.x,
-            clickedObject.position.y,
-            highestCubeZ + 3
-          );
-      
-          newCube.userData = {
-            name: `${cityName}`,
-            level: newLevel,
-            nameCyrillic: clickedObject.userData.nameCyrillic
-          };
-
-          console.log(newCube.userData);
-          scene.add(newCube);
+        
+        if (clickedObject.userData.name) {
+          const cityName = clickedObject.userData.nameCyrillic;
+          setTooltipContent(cityName);
+          setTooltipPosition({ x: `${event.clientX - 50}px`, y: `${event.clientY - 80}px` });
+          setTooltipVisible(true);
         }
+      } else {
+        setTooltipVisible(false);
       }
-      
-      
     };
+    // Attach the click event listener to the renderer's DOM element
     renderer.domElement.addEventListener('click', handleClick);
-
+    
 
     // Model size (already determined)
     const modelSize = { x: 120, y: 94.18, z: 6.82 };
@@ -224,9 +172,9 @@ const Scene = () => {
     });
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('click', handleClick);
+      renderer.domElement.removeEventListener('resize', handleResize);
+      renderer.domElement.removeEventListener('mousemove', handleMouseMove);
+      renderer.domElement.removeEventListener('click', handleClick);
       renderer.dispose();
       document.body.removeChild(renderer.domElement);
       document.body.removeChild(tooltip);
@@ -235,13 +183,10 @@ const Scene = () => {
 
   return (
     <div>
-      {scene && (
-        <>
-          <Macedonia scene={scene} />
-        </>
-      )}
+      {scene && <Macedonia scene={scene} />}
+      <Tooltip content={tooltipContent} position={tooltipPosition} visible={tooltipVisible} />
     </div>
   );
 };
 
-export default Scene;
+export default LandingPage;
